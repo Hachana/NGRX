@@ -1,0 +1,189 @@
+<div class="row">
+
+  <div class="col-md-12">
+    <div class="card card-plain">
+      <div class="card-header">
+      </div>
+      <p class="title">Ajouter produit <button class="btn btn-sm btn-outline-success btn-round btn-icon" (click)="toAdd()"><i class="nc-icon nc-simple-add"></i></button></p> 
+      <p class="title">Get All Produits <button class="btn btn-sm btn-outline-success btn-round btn-icon" (click)="getAllProd()"><i class="nc-icon nc-simple-add"></i></button></p> 
+
+      <ng-container *ngIf="productState$ | async as state" [ngSwitch]="state.dataState">
+        <ng-container *ngSwitchCase="DataStateEnum.INITIAL">
+       <div> Initial State</div>
+        </ng-container>
+        <ng-container *ngSwitchCase="DataStateEnum.LOADING">
+          <div> LOADING...</div>
+           </ng-container>
+           <ng-container *ngSwitchCase="DataStateEnum.ERROR">
+            <div> {{ state.errorMessage | json}}</div>
+             </ng-container>
+           <ng-container *ngSwitchCase="DataStateEnum.LOADED">
+            <div> LOADED</div>
+            <ul class="navbar-nav ml-auto" >
+              <form  #ff="ngForm" (ngSubmit)="search(ff.value)">
+
+              <input matInput  type="text" class="form-control"   name="designation"  ngModel>
+              <button type="submit" class="btn btn-primary btn-round" >Search</button>
+              </form>
+            </ul>
+            <div class="card-body"> 
+              <div class="table-responsive" >
+                <table class="table" >
+      
+                  <thead class=" text-primary">
+                    <th>
+                      ID
+                    </th>
+                    <th>
+                      Designation
+                    </th>
+                    <th>
+                      Prix
+                    </th>
+                    <th class="text-right">
+                      Quantité
+                    </th>
+                    <th></th>
+                    <th></th>
+      
+                  </thead>
+      
+                  <tbody>
+                   
+      
+                      <tr *ngFor="let p of state.products">
+        
+                        <td>
+                         {{p.id}}
+                        </td>
+                        <td>
+                          {{p.designation}}
+        
+                        </td>
+                        <td>
+                          {{p.price}}
+        
+                        </td>
+                        <td class="text-right">
+                          {{p.quantite}}
+        
+                        </td>
+                        <td></td>
+                        <td></td>
+      
+                        <td>
+                          <button class="btn btn-primary " (click)="toUpdate(p)">Modifier</button>
+      
+                        </td>
+                        <td>
+                          <button class="btn btn-danger " (click)="delete(p)">Supprimer</button>
+      
+                        </td>
+               
+                      </tr>
+                        
+                  </tbody>
+      
+                </table>
+                
+              </div>
+            </div>             </ng-container>
+      </ng-container>
+  
+      <div class="col-md-8" *ngIf="mode =='modif'">
+
+          
+
+        <div class="card card-user">
+          <div class="card-header">
+            <h5 class="card-title">Modifier produit</h5>
+          </div>
+          <div class="card-body">
+            <form  #f="ngForm" (ngSubmit)="update(f.value)">
+              <div class="row">
+                <div class="col-md-5 pr-1" hidden="hidden">
+                  <div class="form-group">
+                    <label>ID</label>
+                    <input matInput  type="text" class="form-control"  value="{{pr.id}}" name="id"  [(ngModel)]="pr.id">
+                  </div>
+                </div>
+                <div class="col-md-5 pr-1">
+                  <div class="form-group">
+                    <label>Designation</label>
+                    <input matInput  type="text" class="form-control"  value="{{pr.designation}}" name="designation"  [(ngModel)]="pr.designation">
+                  </div>
+                </div>
+                <div class="col-md-3 px-1">
+                  <div class="form-group">
+                    <label>Prix</label>
+                    <input matInput  type="text" class="form-control" value="{{pr.price}}" name="price" [(ngModel)]="pr.price">
+                  </div>
+                </div>
+                <div class="col-md-4 pl-1">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Quantité</label>
+                    <input matInput  type="email" class="form-control" value="{{pr.quantite}}"  name="quantite" [(ngModel)]="pr.quantite">
+                  </div>
+                </div>
+              </div>
+            
+              
+              <div class="row">
+                <div class="update ml-auto mr-auto"> 
+                  <button type="submit" class="btn btn-primary btn-round" >Modifier</button>
+
+                </div>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      
+      </div>
+      <div class="col-md-8" *ngIf="mode =='ajout'">
+
+          
+
+        <div class="card card-user">
+          <div class="card-header">
+            <h5 class="card-title">Ajout produit</h5>
+          </div>
+          <div class="card-body">
+            <form  #ff="ngForm" (ngSubmit)="addProd(ff.value)">
+              <div class="row">
+                <div class="col-md-5 pr-1">
+                  <div class="form-group">
+                    <label>Designation</label>
+                    <input matInput  type="text" class="form-control"   name="designation"  ngModel>
+                  </div>
+                </div>
+                <div class="col-md-3 px-1">
+                  <div class="form-group">
+                    <label>Prix</label>
+                    <input matInput  type="text" class="form-control"  name="price" ngModel>
+                  </div>
+                </div>
+                <div class="col-md-4 pl-1">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Quantité</label>
+                    <input matInput  type="email" class="form-control"  name="quantite" ngModel>
+                  </div>
+                </div>
+              </div>
+            
+              
+              <div class="row">
+                <div class="update ml-auto mr-auto"> 
+                  <button type="submit" class="btn btn-primary btn-round" >Ajouter</button>
+
+                </div>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      
+      </div>
+    </div>
+  </div>
+</div>
