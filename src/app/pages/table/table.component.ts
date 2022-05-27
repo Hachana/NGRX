@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { GetALLProductsAction, SearchProductsAction, SelectProductsAction } from 'app/ngrx/products.actions';
 import { ProductsState, ProductsStateEnum } from 'app/ngrx/products.reducer';
 import { ProductService } from 'app/product.service';
-import { Observable } from 'rxjs';
+import { interval, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 declare interface TableData {
@@ -24,7 +24,9 @@ export class TableComponent implements OnInit{
     productState$ : Observable<ProductsState> | null= null;
     DataStateEnum =ProductsStateEnum;
     searchCriteria =  " ";
+    
     constructor(private prodservice:ProductService,private store:Store<any>) {
+
        }
     ngOnInit(){
      /* this.getAll();*/
@@ -32,7 +34,6 @@ export class TableComponent implements OnInit{
         map((state)=>state.catalogState)
       );
     }
-
     getAllProd(){
       this.store.dispatch(new GetALLProductsAction({}))
     }
@@ -50,6 +51,7 @@ export class TableComponent implements OnInit{
     this.mode="modif";
    this.pr=p;
    this.prodId=p.id;
+   
    }
   updateNormal(p){
     console.log("modifier !")
@@ -95,7 +97,7 @@ addProd(prod)
 
 },err=>{
   console.log("erreur ajout des produits");
-  alert("erreur ajout des produits ")
+  alert("erreur ajout des produits ") 
 }) 
 }
 
@@ -123,6 +125,17 @@ update(data){
   this.mode="";
 
 }
+
+@HostListener("window:scroll", [])
+onScroll(): void {
+  if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+    // Load Your Data Here
+    console.log("SCROLLLL")
+    this.getAllProd();
+  }
+}
+
+
 }
 
 
